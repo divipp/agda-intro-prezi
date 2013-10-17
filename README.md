@@ -5,7 +5,7 @@ This is a short introduction into the technique of "compile-time testing", also 
 
 I show why and how "compile-time testing" will be the solution for outstanding problems of programming. 
 
-(The slides were presented at Prezi in 45 minutes on 11. Oct. 2013.)
+(The slides were presented at Prezi in 45 minutes on 11. Oct. 2013: http://www.ustream.tv/recorded/39746752)
 
 
 Runtime vs. compile-time
