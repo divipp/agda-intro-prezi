@@ -394,27 +394,6 @@ Agda code (direct use of `_≡_`)
 +-assoc : (a b c : ℕ) → (a + b) + c ≡ a + (b + c)
 +-assoc zero b c = refl
 +-assoc (suc a) b c = cong-suc (+-assoc a b c)
-
-+-left-id : (a : ℕ) → zero + a ≡ a
-+-left-id a = refl
-
-+-right-id : (a : ℕ) → a + zero ≡ a
-+-right-id zero = refl
-+-right-id (suc a) = cong suc (+-right-id a)
-
-com-suc : (a b : ℕ) → a + suc b ≡ suc a + b
-com-suc zero b = refl
-com-suc (suc a) b = cong suc (com-suc a b)
-
-sym : {A : Set} {a b : A} → a ≡ b → b ≡ a
-sym refl = refl
-
-trans : {A : Set} {a b c : A} → a ≡ b → b ≡ c → a ≡ c
-trans refl refl = refl
-
-+-com : (a b : ℕ) → a + b ≡ b + a
-+-com zero b = sym (+-right-id b)
-+-com (suc a) b = trans (cong suc (+-com a b)) (sym (com-suc b a))
 ```
 
 Agda code (final)
@@ -442,7 +421,13 @@ cong f refl = refl
 +-assoc : (a b c : ℕ) → (a + b) + c ≡ a + (b + c)
 +-assoc zero b c = refl
 +-assoc (suc a) b c = cong suc (+-assoc a b c)
+```
 
+
+Extra properties (for the curious)
+===============================
+
+``` agda
 +-left-id : (a : ℕ) → zero + a ≡ a
 +-left-id a = refl
 
@@ -464,6 +449,7 @@ trans refl refl = refl
 +-com zero b = sym (+-right-id b)
 +-com (suc a) b = trans (cong suc (+-com a b)) (sym (com-suc b a))
 ```
+
 
 How does it scale
 =================
