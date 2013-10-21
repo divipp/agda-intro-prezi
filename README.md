@@ -71,7 +71,7 @@ import Prelude hiding ((+))
 
 Peano numbers
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 data Nat :: * where
     Zero :: Nat
     Suc  :: Nat -> Nat
@@ -91,11 +91,11 @@ four  = Suc three
 (+) :: Nat -> Nat -> Nat
 Zero  + b = b
 Suc a + b = Suc (a + b)
-~~~~
+```
 
 Unit test
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 assoc_unit :: Bool
 assoc_unit =  (one + one) + two == one + (one + two)
 
@@ -104,27 +104,27 @@ assoc_unit' =  assoc_prop one one two
 
 assoc_prop :: Nat -> Nat -> Nat -> Bool
 assoc_prop a b c =  (a + b) + c == a + (b + c)
-~~~~
+```
 
 Property test (random)
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 assoc_qc :: IO ()
 assoc_qc = quickCheck assoc_prop
 
 instance Arbitrary Nat where
     arbitrary = oneof [return Zero, fmap Suc arbitrary]
-~~~~
+```
 
 Property test (systematic)
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 assoc_sc :: IO ()
 assoc_sc = smallCheck 5 assoc_prop
 
 instance Monad m => Serial m Nat where
     series = cons0 Zero \/ cons1 Suc
-~~~~
+```
 
 Informal proofs
 ===============
@@ -137,7 +137,7 @@ Statement (1)
 Proof by evaluation
 ===================
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
       assoc_unit
   ~>  (one + one) + two == one + (one + two)          -- one
   ~>  (Suc Zero + one) + two == one + (one + two)     -- (+) Suc
@@ -154,26 +154,26 @@ Proof by evaluation
   ~>  Zero + two == Zero + two
   ~>  ...
   ~>  True
-~~~~
+```
 
 Statement (2)
 =============
 
 ∀ `n :: Nat`, `m :: Nat`
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 assoc_prop Zero n m  ~>  True
-~~~~
+```
 
 Proof by evaluation of open expressions
 =======================================
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
       assoc_prop Zero n m
   ~>  (Zero + n) + m == Zero + (n + m)    -- (+) Zero
   ~>  n + m == Zero + (n + m)             -- (+) Zero
   ~>  n + m == n + m
-~~~~
+```
 
 We stuck here, use the following lemma.
 
@@ -187,36 +187,36 @@ Statement (3)
 
 ∀ `n :: Nat`
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 refl n  ~>  True
-~~~~
+```
 
 where
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 refl :: Nat -> Bool
 refl n = n == n
-~~~~
+```
 
 Proof by case distinction
 =========================
 
 1st case:
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
       refl Zero
   ~>  Zero == Zero
   ~>  True
-~~~~
+```
 
 2nd case:
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
       refl (Suc n')
   ~>  Suc n' == Suc n'
   ~>  n' == n'
   =   refl n'
-~~~~
+```
 
 `refl` is constant `True` by induction.
 
@@ -225,30 +225,30 @@ Statement (4)
 
 ∀ `n :: Nat`, `m :: Nat`, `k :: Nat`
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 assoc_prop n m k  ~>  True
-~~~~
+```
 
 Proof by case distinction
 =========================
 
 1st case:
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
       assoc_prop Zero m k    -- statement (3)
   =   True
-~~~~
+```
 
 2nd case:
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
       assoc_prop (Suc n') m k
   ~>  (Suc n' + m) + k == Suc n' + (m + k)
   ~>  ...
   ~>  Suc ((n' + m) + k) == Suc (n' + (m + k))    -- (==) Suc
   ~>  (n' + m) + k == n' + (m + k)
   =   assoc_prop n' m k
-~~~~
+```
 
 `assoc_prop` is constant `True` by induction.
 
@@ -266,9 +266,9 @@ Solution
 Use *types* for statement formalization and
 *type checking* for prof checking!
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 proof :: theorem
-~~~~
+```
 
 The type system checks whether a proof matches a theorem.
 
@@ -318,7 +318,7 @@ reflProp n =  n ≟ n
 Agda code (direct `isTrue`)
 ===========================
 
-~~~~ {.sourceCode .literate .haskell}
+``` agda
   data isTrue : Bool → Set where
     ok : isTrue true
 
@@ -335,12 +335,12 @@ Agda code (direct `isTrue`)
   assocProp-True : (n m k : ℕ) → isTrue (assocProp n m k)
   assocProp-True zero    m k = assocProp-zero-True m k
   assocProp-True (suc n) m k = assocProp-True n m k
-~~~~
+```
 
 Agda code (switch to `_≡_`)
 ===========================
 
-~~~~ {.sourceCode .literate .haskell}
+``` agda
 data _≡_ {A : Set} : A → A → Set where
   refl : {a : A} → a ≡ a
 
@@ -365,12 +365,12 @@ assocProp-zero-True n m = refl-True (n + m)
 assocProp-True : (n m k : ℕ) → isTrue (assocProp n m k)
 assocProp-True zero    m k = assocProp-zero-True m k
 assocProp-True (suc n) m k = assocProp-True n m k
-~~~~
+```
 
 Agda code (connection between `_≡_` and `_≟_`)
 ==============================================
 
-~~~~ {.sourceCode .literate .haskell}
+``` agda
 cong : {A B : Set} {a b : A} (f : A → B) → a ≡ b → f a ≡ f b
 cong f refl = refl
 
@@ -385,12 +385,12 @@ cong-suc = cong suc
 ≟-to-≡ zero (suc b) ()
 ≟-to-≡ (suc a) zero ()
 ≟-to-≡ (suc a) (suc b) i = cong-suc (≟-to-≡ a b i)
-~~~~
+```
 
 Agda code (direct use of `_≡_`)
 ===============================
 
-~~~~ {.sourceCode .literate .haskell}
+``` agda
 +-assoc : (a b c : ℕ) → (a + b) + c ≡ a + (b + c)
 +-assoc zero b c = refl
 +-assoc (suc a) b c = cong-suc (+-assoc a b c)
@@ -415,12 +415,12 @@ trans refl refl = refl
 +-com : (a b : ℕ) → a + b ≡ b + a
 +-com zero b = sym (+-right-id b)
 +-com (suc a) b = trans (cong suc (+-com a b)) (sym (com-suc b a))
-~~~~
+```
 
 Agda code (final)
 =================
 
-~~~~ {.sourceCode .literate .haskell}
+``` agda
 module Nat where
 
 data ℕ : Set where
@@ -463,7 +463,7 @@ trans refl refl = refl
 +-com : (a b : ℕ) → a + b ≡ b + a
 +-com zero b = sym (+-right-id b)
 +-com (suc a) b = trans (cong suc (+-com a b)) (sym (com-suc b a))
-~~~~
+```
 
 How does it scale
 =================
