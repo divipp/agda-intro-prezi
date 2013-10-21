@@ -52,22 +52,22 @@ Full Haskell code
 
 Pragmas
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE GADTs #-}
-~~~~
+```
 
 Imports
 
-~~~~ {.sourceCode .literate .haskell}
+``` haskell
 import Test.QuickCheck
 import Test.SmallCheck
 import Test.SmallCheck.Series
 
 import Prelude hiding ((+))
-~~~~
+```
 
 Peano numbers
 
@@ -280,7 +280,7 @@ Formal proofs
 Agda code (prelude)
 ===================
 
-~~~~ {.sourceCode .literate .haskell}
+``` agda
 module Nat where
 
 data ℕ : Set where
@@ -313,7 +313,7 @@ assocProp a b c =  (a + b) + c ≟ a + (b + c)
 
 reflProp : ℕ → Bool
 reflProp n =  n ≟ n
-~~~~
+```
 
 Agda code (direct `isTrue`)
 ===========================
